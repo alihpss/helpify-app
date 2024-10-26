@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.helpify.R
 import com.example.helpify.databinding.FragmentLoginBinding
-import com.example.helpify.ui.network.LoginRequest
-import com.example.helpify.ui.network.RetrofitClient
+import com.example.helpify.network.LoginRequest
+import com.example.helpify.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

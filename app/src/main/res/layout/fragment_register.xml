@@ -8,19 +8,25 @@
     tools:context=".ui.dashboard.DashboardFragment">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/imageView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14sp"
+            android:src="@drawable/logo_branca" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="618dp"
+            android:layout_marginTop="60sp"
             android:background="#FFFFFF"
             android:orientation="vertical"
             android:padding="16dp">
@@ -37,7 +43,7 @@
             <EditText
                 android:id="@+id/editTextText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="58dp"
                 android:layout_marginTop="14sp"
                 android:ems="10"
                 android:hint="Nome"
@@ -82,7 +88,7 @@
             <Spinner
                 android:id="@+id/userTypeSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="54dp"
                 android:layout_marginBottom="16dp" />
 
             <Button
@@ -93,8 +99,28 @@
                 android:backgroundTint="#516FFE"
                 android:text="Cadastrar" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="99dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Já tem cadastro?" />
+
+                <Button
+                    android:id="@+id/btnGoToLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Login" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

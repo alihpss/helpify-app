@@ -28,6 +28,9 @@ class RegisterFragment : Fragment() {
 
         // Ação ao clicar no botão de Registrar
 
+        binding.btnGoToLogin.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+        }
 
     }
 
