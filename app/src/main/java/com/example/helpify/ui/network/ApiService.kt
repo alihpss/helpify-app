@@ -9,6 +9,6 @@ data class LoginRequest(val email: String, val password: String)
 
 // Interface Retrofit
 interface ApiService {
-    @POST("/login")
+    @POST("/auth/signin")
     fun login(@Body loginRequest: LoginRequest): Call<Void>
 }

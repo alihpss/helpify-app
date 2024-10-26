@@ -1,6 +1,7 @@
 package com.example.helpify.ui.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,23 +53,30 @@ class LoginFragment : Fragment() {
     private fun loginUser(email: String, password: String) {
         val loginRequest = LoginRequest(email, password)
 
-        // Faz a chamada à API usando Retrofit
-        RetrofitClient.apiService.login(loginRequest).enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
-                    // Navegue para a tela Home aqui, se necessário
-                    findNavController().navigate(R.id.navigation_home)
-                } else {
-                    Toast.makeText(requireContext(), "Falha no login. Verifique suas credenciais.", Toast.LENGTH_SHORT).show()
+        try {
+            // Faz a chamada à API usando Retrofit
+            RetrofitClient.apiService.login(loginRequest).enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
+                        // Navegue para a tela Home aqui, se necessário
+                        findNavController().navigate(R.id.navigation_home)
+                    } else {
+                        Toast.makeText(requireContext(), "Falha no login. Verifique suas credenciais.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Toast.makeText(requireContext(), "Erro de rede: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Toast.makeText(requireContext(), "Erro de rede: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } catch (e: Exception) {
+            // Mostra um Toast em caso de erro inesperado sem fechar o app
+            Toast.makeText(requireContext(), "Erro ao tentar realizar login: ${e.message}", Toast.LENGTH_LONG).show()
+            Log.d("e", e.message.toString())
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
