@@ -83,6 +83,9 @@
                 android:layout_weight="1"
                 android:text="Registrar" />
         </LinearLayout>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6fb888a4a4ae3c927953f2bfea4f0515da807231
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
