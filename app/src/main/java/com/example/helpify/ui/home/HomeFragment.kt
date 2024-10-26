@@ -27,8 +27,6 @@ class HomeFragment : Fragment() {
         val userNameTextView = binding.textViewUserName
         val nextAppointmentsTextView = binding.textViewNextAppointments
 
-        // Aqui você pode popular os itens da Grid de serviços programaticamente se necessário
-
         return root
     }
 

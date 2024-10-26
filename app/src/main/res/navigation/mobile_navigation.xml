@@ -23,6 +23,10 @@
         android:name="com.example.helpify.ui.register.RegisterFragment"
         android:label="RegisterFragment"
         tools:layout="@layout/fragment_register">
+
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@+id/loginFragment" />
     </fragment>
 
     <fragment
