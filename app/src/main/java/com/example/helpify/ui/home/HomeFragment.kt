@@ -139,18 +139,42 @@ class HomeFragment : Fragment() {
             })
     }
 
+    private fun formatDate(inputDate: String): String {
+        return try {
+            // Formato da data de entrada
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            // Formato desejado
+            val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            // Converte a data
+            val date = inputFormat.parse(inputDate)
+            outputFormat.format(date ?: "")
+        } catch (e: Exception) {
+            inputDate // Retorna a data original se algo der errado
+        }
+    }
+
     private fun populateScheduledServices(scheduledServices: List<ScheduledService>) {
         // Limpa qualquer card existente
         binding.appointmentContainer.removeAllViews()
+
+        val userData = SharedPreferencesManager.getUserData(requireContext())
 
         // Popula o container horizontal com novos cards
         scheduledServices.forEach { service ->
             val appointmentCard = layoutInflater.inflate(R.layout.appointment_card, binding.appointmentContainer, false)
 
-            appointmentCard.findViewById<TextView>(R.id.appointmentNumber).text = "Serviço #${service.id}"
-            appointmentCard.findViewById<TextView>(R.id.appointmentDate).text = service.service_date
+
+            val providerOrClient = if (userData?.role == "PROVIDER") {
+                "Cliente: ${service.contracting_user?.name ?: "A definir"}"
+            } else {
+                "Prestador: ${service.contracted_user?.name ?: "A definir"}"
+            }
+
+            appointmentCard.findViewById<TextView>(R.id.appointmentNumber).text = "Serviço "
+            appointmentCard.findViewById<TextView>(R.id.appointmentDate).text = "Data: ${formatDate(service.service_date)}"
+            appointmentCard.findViewById<TextView>(R.id.appointmentAddress).text = "Endereço: ${service.service_address} "
             appointmentCard.findViewById<TextView>(R.id.appointmentType).text = "Tipo: ${service.service.name}"
-            appointmentCard.findViewById<TextView>(R.id.appointmentProvider).text = "Prestador: ${service.contracted_user?.name ?: "A definir"}"
+            appointmentCard.findViewById<TextView>(R.id.appointmentProvider).text = providerOrClient
             appointmentCard.findViewById<TextView>(R.id.appointmentStatus).text = "Status: ${service.status}"
 
             binding.appointmentContainer.addView(appointmentCard)
@@ -170,6 +194,7 @@ class HomeFragment : Fragment() {
         appointmentCard.findViewById<TextView>(R.id.appointmentNumber).text = "Nenhum serviço agendado"
         appointmentCard.findViewById<TextView>(R.id.appointmentDate).text = ""
         appointmentCard.findViewById<TextView>(R.id.appointmentType).text = ""
+        appointmentCard.findViewById<TextView>(R.id.appointmentAddress).text = ""
         appointmentCard.findViewById<TextView>(R.id.appointmentProvider).text = ""
         appointmentCard.findViewById<TextView>(R.id.appointmentStatus).text = ""
 

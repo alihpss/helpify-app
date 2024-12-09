@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.helpify.R
+import com.example.helpify.classes.AcceptScheduledService
 import com.example.helpify.classes.ScheduleServiceRequest
 import com.example.helpify.classes.ScheduledService
 import com.example.helpify.classes.Service
@@ -148,6 +149,39 @@ class ScheduleServiceFragment : Fragment() {
         })
     }
 
+    private fun acceptScheduleService(serviceId: String) {
+        // Obtém o ID do usuário armazenado
+        val userId = SharedPreferencesManager.getUserData(requireContext())?.id
+        if (userId.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Erro: Usuário não autenticado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Cria o corpo da requisição
+        val request = AcceptScheduledService(userId)
+
+        // Faz a chamada ao endpoint
+        RetrofitClient.apiService.acceptScheduleService(serviceId, request).enqueue(object : Callback<Void> {
+
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                Log.d("OLHA O ID", serviceId)
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Serviço aceito com sucesso!", Toast.LENGTH_SHORT).show()
+                    Log.d("ServiceResult", "Serviço $serviceId aceito.")
+                } else {
+                    Toast.makeText(requireContext(), "Falha ao aceitar serviço: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    Log.e("ServiceResult", "Erro: ${response.errorBody()?.string()} ${serviceId} ")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(requireContext(), "Erro na requisição: ${t.message}", Toast.LENGTH_SHORT).show()
+                Log.e("ServiceResult", "Erro na requisição", t)
+            }
+        })
+    }
+
+
     private fun populateServices(services: List<ScheduledService>) {
         // Limpa os serviços antigos antes de popular novos
         bindingProvider.servicesContainer.removeAllViews()
@@ -171,8 +205,7 @@ class ScheduleServiceFragment : Fragment() {
 
             // Configurar ação do botão de log
             logButton.setOnClickListener {
-                Log.d("ServiceResult", "Service ID: ${service.id}")
-                Toast.makeText(requireContext(), "Service ID: ${service.id}", Toast.LENGTH_SHORT).show()
+                acceptScheduleService(service.id)
             }
 
             // Adicionar o layout ao container principal
