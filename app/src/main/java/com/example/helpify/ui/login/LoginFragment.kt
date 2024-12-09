@@ -1,5 +1,6 @@
 package com.example.helpify.ui.login
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +12,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.helpify.R
 import com.example.helpify.databinding.FragmentLoginBinding
 import com.example.helpify.network.LoginRequest
+import com.example.helpify.network.LoginResponse
 import com.example.helpify.network.RetrofitClient
+import com.example.helpify.utils.AuthUtils
+import com.example.helpify.utils.SharedPreferencesManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,28 +57,36 @@ class LoginFragment : Fragment() {
     private fun loginUser(email: String, password: String) {
         val loginRequest = LoginRequest(email, password)
 
-        try {
-            // Faz a chamada à API usando Retrofit
-            RetrofitClient.apiService.login(loginRequest).enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(requireContext(), "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
-                        // Navegue para a tela Home aqui, se necessário
-                        findNavController().navigate(R.id.navigation_home)
-                    } else {
-                        Toast.makeText(requireContext(), "Falha no login. Verifique suas credenciais.", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        RetrofitClient.apiService.login(loginRequest).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                Log.d("LOGIN", "ENTRANDO")
+                if (response.isSuccessful) {
+                    Log.d("LOGIN", "ENTROU NO SUCESSO")
+                    Log.d("RESPOSTA", response.toString() ?: "")
+                    val token = response.body()?.accessToken
+                    Log.d("LOGIN", token.toString())
 
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Erro de rede: ${t.message}", Toast.LENGTH_SHORT).show()
+                    if (token != null) {
+                        SharedPreferencesManager.saveToken(requireContext(), token)
+
+                        // Decodifica o token e salva os dados do usuário
+                        val userData = AuthUtils.decodeJWT(token)
+                        userData?.let {
+                            SharedPreferencesManager.saveUserData(requireContext(), it)
+                        }
+
+                        Toast.makeText(requireContext(), "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.navigation_home)
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Falha no login. Verifique suas credenciais.", Toast.LENGTH_SHORT).show()
                 }
-            })
-        } catch (e: Exception) {
-            // Mostra um Toast em caso de erro inesperado sem fechar o app
-            Toast.makeText(requireContext(), "Erro ao tentar realizar login: ${e.message}", Toast.LENGTH_LONG).show()
-            Log.d("e", e.message.toString())
-        }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Toast.makeText(requireContext(), "Erro de rede: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
 

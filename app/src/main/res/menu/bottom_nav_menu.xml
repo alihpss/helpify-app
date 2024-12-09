@@ -7,13 +7,20 @@
         android:title="@string/title_home" />
 
     <item
+        android:id="@+id/navigation_notifications"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/agendar" />
+
+    <item
+        android:id="@+id/navigation_services"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/title_services" />
+
+
+    <item
         android:id="@+id/navigation_dashboard"
         android:icon="@android:drawable/ic_menu_my_calendar"
         android:title="@string/title_dashboard" />
 
-    <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="@string/title_notifications" />
 
 </menu>
